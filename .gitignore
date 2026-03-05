@@ -1,0 +1,18 @@
+# Caches et fichiers compilés Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements virtuels (si vous en utilisez un)
+venv/
+env/
+.env/
+
+# Cache de Pytest
+.pytest_cache/
+
+# Fichiers de configuration de votre éditeur (VS Code)
+.vscode/
+
+# Fichiers système
+.DS_Store
