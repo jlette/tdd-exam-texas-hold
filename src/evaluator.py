@@ -1,30 +1,47 @@
 from collections import Counter
+
 class Evaluator:
     @staticmethod
     def evaluate_best_hand(available_cards):
 
         ranks_counts = Counter(card.rank for card in available_cards)
         
-        pair_ranks = [rank for rank, count in ranks_counts.items() if count == 2]
-        
-        if pair_ranks:
+        pair_ranks = sorted(
+            [rank for rank, count in ranks_counts.items() if count >= 2],
+            key=lambda r: available_cards[0].RANK_VALUES[r],
+            reverse=True
+        )
 
-            best_pair_rank = max(pair_ranks, key=lambda r: Card.RANK_VALUES[r])
+        if len(pair_ranks) >= 2:
+            best_two_ranks = pair_ranks[:2]
             
-            pair_cards = [card for card in available_cards if card.rank == best_pair_rank]
-            remaining_cards = [card for card in available_cards if card.rank != best_pair_rank]
+            pair_cards = []
+            for rank in best_two_ranks:
+                cards_of_this_rank = [c for c in available_cards if c.rank == rank]
+                pair_cards.extend(cards_of_this_rank[:2])
             
+            remaining_cards = [c for c in available_cards if c not in pair_cards]
             sorted_kickers = sorted(remaining_cards, reverse=True)
             
-            chosen_five = pair_cards + sorted_kickers[:3]
+            return {
+                "category": "Two Pair",
+                "chosen_five_cards": pair_cards + sorted_kickers[:1]
+            }
+
+        if len(pair_ranks) == 1:
+            best_rank = pair_ranks[0]
+            pair_cards = [c for c in available_cards if c.rank == best_rank]
+            
+            remaining_cards = [c for c in available_cards if c.rank != best_rank]
+            sorted_kickers = sorted(remaining_cards, reverse=True)
             
             return {
                 "category": "One Pair",
-                "chosen_five_cards": chosen_five
+                "chosen_five_cards": pair_cards + sorted_kickers[:3]
             }
-            
-        sorted_cards = sorted(available_cards, reverse=True)
+
+        sorted_all = sorted(available_cards, reverse=True)
         return {
             "category": "High Card",
-            "chosen_five_cards": sorted_cards[:5]
+            "chosen_five_cards": sorted_all[:5]
         }
