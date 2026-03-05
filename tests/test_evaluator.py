@@ -63,3 +63,13 @@ def test_should_identify_two_pair_category_and_order_them_by_rank():
     
     chosen_ranks = [card.rank for card in result["chosen_five_cards"]]
     assert chosen_ranks == ['10', '10', '8', '8', 'A']
+
+def test_should_identify_three_of_a_kind():
+    all_available_cards = [
+        Card('J', 'H'), Card('J', 'S'), Card('J', 'D'), # Brelan
+        Card('A', 'C'), Card('2', 'H'), Card('3', 'S'), Card('4', 'D')
+    ]
+    result = Evaluator.evaluate_best_hand(all_available_cards)
+    assert result["category"] == "Three of a Kind"
+    assert result["chosen_five_cards"][0].rank == 'J'
+    assert result["chosen_five_cards"][2].rank == 'J'
