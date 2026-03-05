@@ -6,6 +6,17 @@ class Evaluator:
 
         ranks_counts = Counter(card.rank for card in available_cards)
         
+        for rank, count in ranks_counts.items():
+            if count == 4:
+                four_cards = [c for c in available_cards if c.rank == rank]
+                kicker = sorted([c for c in available_cards if c.rank != rank], reverse=True)[0]
+                return {"category": "Four of a Kind", "chosen_five_cards": four_cards + [kicker]}
+            
+            if count == 3:
+                three_cards = [c for c in available_cards if c.rank == rank]
+                kickers = sorted([c for c in available_cards if c.rank != rank], reverse=True)[:2]
+                return {"category": "Three of a Kind", "chosen_five_cards": three_cards + kickers}
+        
         pair_ranks = sorted(
             [rank for rank, count in ranks_counts.items() if count >= 2],
             key=lambda r: available_cards[0].RANK_VALUES[r],
